@@ -1,34 +1,39 @@
 version: "3.9"
+
 services:
   db:
     image: mysql:8.0
-    container_name: asurance_db
+    container_name: assurance_db
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: asurance_db
-      MYSQL_USER: asurance_user
-      MYSQL_PASSWORD: asurance_pass
+      MYSQL_DATABASE: assurance_system
+      MYSQL_USER: assurance_user
+      MYSQL_PASSWORD: assurance_pass
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "assurance_user", "-passurance_pass"]
+      interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 20
+      start_period: 30s
 
   backend:
-    build: ./backend
-    container_name: asurance_backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: assurance_backend
     restart: always
     ports:
       - "8000:8000"
-    env_file:
-      - ./backend/.env
     environment:
-      DATABASE_URL: mysql+pymysql://root:root@db:3306/asurance_db
+      DATABASE_URL: mysql+pymysql://assurance_user:assurance_pass@db:3306/assurance_db
+      SECRET_KEY: super-secret-key-change-in-production-min32chars!!
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 60
     depends_on:
       db:
         condition: service_healthy
@@ -36,15 +41,17 @@ services:
       - ./backend:/app
 
   frontend:
-    build: ./frontend
-    container_name: asurance_frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: assurance_frontend
     restart: always
     ports:
       - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
     depends_on:
       - backend
-    environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:8000
 
 volumes:
   db_data:
