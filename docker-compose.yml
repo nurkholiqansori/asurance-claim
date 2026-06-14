@@ -2,13 +2,13 @@ version: "3.9"
 services:
   db:
     image: mysql:8.0
-    container_name: approval_db
+    container_name: asurance_db
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: approval_system
-      MYSQL_USER: approval_user
-      MYSQL_PASSWORD: approval_pass
+      MYSQL_DATABASE: asurance_db
+      MYSQL_USER: asurance_user
+      MYSQL_PASSWORD: asurance_pass
     ports:
       - "3306:3306"
     volumes:
@@ -21,14 +21,14 @@ services:
 
   backend:
     build: ./backend
-    container_name: approval_backend
+    container_name: asurance_backend
     restart: always
     ports:
       - "8000:8000"
     env_file:
       - ./backend/.env
     environment:
-      DATABASE_URL: mysql+pymysql://root:root@db:3306/approval_system
+      DATABASE_URL: mysql+pymysql://root:root@db:3306/asurance_db
     depends_on:
       db:
         condition: service_healthy
@@ -37,7 +37,7 @@ services:
 
   frontend:
     build: ./frontend
-    container_name: approval_frontend
+    container_name: asurance_frontend
     restart: always
     ports:
       - "3000:3000"
