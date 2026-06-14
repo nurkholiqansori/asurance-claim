@@ -10,8 +10,8 @@ Base.metadata.create_all(bind=engine)
 
 DUMMY_USERS = [
     {"name": "Master User",     "email": "user@demo.com",     "password": "password123", "role": UserRole.user},
-    {"name": "Bob Verifier",   "email": "verifier@demo.com", "password": "password123", "role": UserRole.verifier},
-    {"name": "Carol Approver", "email": "approver@demo.com", "password": "password123", "role": UserRole.approver},
+    {"name": "Verifier User",   "email": "verifier@demo.com", "password": "password123", "role": UserRole.verifier},
+    {"name": "Approver User", "email": "approver@demo.com", "password": "password123", "role": UserRole.approver},
 ]
 
 db = SessionLocal()
